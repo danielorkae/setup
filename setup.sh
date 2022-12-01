@@ -51,10 +51,6 @@ curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
 unzip awscli-bundle.zip
 sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 
-# Install Kubectl
-curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-
 echo "--> Installing and configuring zsh"
 
 ZSH_CUSTOM="$HOME/.oh-my-zsh"
