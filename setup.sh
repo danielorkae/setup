@@ -20,6 +20,9 @@ echo "--> Installing dev tools"
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
+# Install NVM
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.2/install.sh | bash
+
 # Install Yarn
 sudo npm --global install yarn
 
