@@ -137,6 +137,18 @@ zinit light zsh-users/zsh-completions
 
 ### End of Zinit extensions
 
+### Loaders
+
+#### NVM
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+#### NVM
+
+### End of Loaders
+
 ### Aliases
 
 alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
+
+### End of Aliases
