@@ -94,6 +94,15 @@ install_package "AWS CLI" \
   unzip -o awscli-bundle.zip && \
   sudo python3 ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws"
 
+# Install GH CLI
+install_package "GitHub CLI" \
+  "is_installed gh" \
+  "curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+  && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+  && echo \"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+  && sudo apt update \
+  && sudo apt install gh -y"
+
 # Install Android SDK
 install_package "Android SDK" \
   "is_directory $HOME/.android" \
