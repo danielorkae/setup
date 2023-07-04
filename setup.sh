@@ -51,7 +51,7 @@ sudo apt-get -y install docker-ce docker-ce-cli containerd.io
 
 # Install AWS Cli
 curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
-unzip awscli-bundle.zip
+unzip -o awscli-bundle.zip
 sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 
 # Install Android SDK
