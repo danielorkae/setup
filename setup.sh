@@ -48,6 +48,11 @@ sudo apt-get install -y \
 
 echo "--> Installing dev tools"
 
+# Install G++
+install_package "G++"
+  "is_installed g++" \
+  "sudo apt install g++"
+
 # Install Node.js LTS
 install_package "Node.js" \
   "is_installed node" \
