@@ -59,7 +59,7 @@ cd
 mkdir .android
 cd .android
 wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
-unzip commandlinetools-linux-6609375_latest.zip -d cmdline-tools
+unzip -o commandlinetools-linux-6609375_latest.zip -d cmdline-tools
 rm -rf commandlinetools-linux-6609375_latest.zip
 sudo apt install -y lib32z1 openjdk-11-jdk
 cd && cd .android/cmdline-tools/tools/bin
