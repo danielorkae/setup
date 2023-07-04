@@ -51,7 +51,7 @@ echo "--> Installing dev tools"
 # Install G++
 install_package "G++"
   "is_installed g++" \
-  "sudo apt install g++"
+  "sudo apt install g++ -y"
 
 # Install Node.js LTS
 install_package "Node.js" \
