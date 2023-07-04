@@ -61,7 +61,7 @@ cd .android
 wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
 unzip commandlinetools-linux-6609375_latest.zip -d cmdline-tools
 rm -rf commandlinetools-linux-6609375_latest.zip
-sudo apt install lib32z1 openjdk-11-jdk
+sudo apt install -y lib32z1 openjdk-11-jdk
 cd && cd .android/cmdline-tools/tools/bin
 ./sdkmanager --install "platform-tools" "platforms;android-31" "build-tools;34.0.0" "cmake;3.6.4111459"
 ./sdkmanager --update
