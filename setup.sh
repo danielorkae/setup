@@ -49,9 +49,9 @@ sudo apt-get install -y \
 echo "--> Installing dev tools"
 
 # Install G++
-install_package "G++" \
-  "is_installed g++" \
-  "sudo apt-get install -y g++"
+install_package "Gcc" \
+  "is_installed gcc" \
+  "sudo apt-get install -y gcc"
 
 # Install Node.js LTS
 install_package "Node.js" \
