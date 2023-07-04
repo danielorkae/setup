@@ -120,8 +120,6 @@ SPACESHIP_PROMPT_ADD_NEWLINE=false
 SPACESHIP_CHAR_SYMBOL="❯"
 SPACESHIP_CHAR_SUFFIX=" "
 
-### End of Spaceship settings
-
 ### Zinit inatialization
 
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
@@ -135,8 +133,6 @@ zinit light zdharma-continuum/fast-syntax-highlighting
 zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-completions
 
-### End of Zinit extensions
-
 ### Loaders
 
 #### NVM
@@ -145,10 +141,29 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 #### NVM
 
-### End of Loaders
-
 ### Aliases
 
 alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
 
-### End of Aliases
+### Java/Android
+
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
+export ANDROID_HOME=/home/danielorkae/Android/Sdk
+export ANDROID_SDK_ROOT=$ANDROID_HOME
+
+### Paths
+
+export PATH="$(yarn global bin):$PATH"
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/tools
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/tools/bin
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:/opt/gradle/gradle-7.4.2/bin
+
+
+### Export WSL Host
+export WSL_HOST=$(tail -1 /etc/resolv.conf | cut -d' ' -f2)
+
+### Export ADB Socket 
+export ADB_SERVER_SOCKET=tcp:$WSL_HOST:5037
