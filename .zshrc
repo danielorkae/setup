@@ -149,7 +149,7 @@ alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
 
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
-export ANDROID_HOME=/home/danielorkae/Android/Sdk
+export ANDROID_HOME=$HOME/.android
 export ANDROID_SDK_ROOT=$ANDROID_HOME
 
 ### Paths
