@@ -3,17 +3,17 @@ set -eo pipefail
 
 LOG_FILE="install_log.txt"
 
-# Função para verificar se um comando está instalado
+# Verifica se um comando está instalado
 is_installed() {
   command -v "$1" &>/dev/null
 }
 
-# Função para verificar se um diretório existe
+# Verifica se um diretório existe
 is_directory() {
   [ -d "$1" ]
 }
 
-# Função para instalar um pacote
+# Instala um pacote simples (evitar passar comandos com aspas aninhadas)
 install_package() {
   local package_name=$1
   local check_command=$2
@@ -56,12 +56,12 @@ install_package "GCC" \
   "is_installed gcc" \
   "sudo apt-get install -y gcc"
 
-# Install NVM (Node Version Manager)
+# Install NVM
 install_package "NVM" \
   "is_directory $HOME/.nvm" \
   "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/HEAD/install.sh | bash"
 
-# Load NVM for use in this script session
+# Load NVM na sessão atual
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
@@ -74,7 +74,7 @@ if ! is_installed node; then
   echo "Node.js LTS installed."
 fi
 
-# Install pnpm via corepack
+# Install pnpm
 install_package "pnpm" \
   "is_installed pnpm" \
   "corepack enable pnpm"
@@ -84,7 +84,7 @@ install_package "PHP" \
   "is_installed php" \
   "sudo apt install -y php php-curl php-zip php-intl php-mbstring php-xml php-imagick"
 
-# Install Composer (multi-step, handled inline)
+# Install Composer (inline)
 if ! is_installed composer; then
   echo "Installing Composer..."
   php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -97,7 +97,7 @@ fi
 install_package "Docker" \
   "is_installed docker" \
   "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --yes --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
-  echo \"deb [arch=\$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \$(lsb_release -cs) stable\" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+  echo 'deb [arch=\$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \$(lsb_release -cs) stable' | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null && \
   sudo apt-get update && \
   sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin && \
   sudo usermod -aG docker \$USER"
@@ -115,21 +115,21 @@ install_package "GitHub CLI" \
   "is_installed gh" \
   "curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
   && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-  && echo \"deb [arch=\$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+  && echo 'deb [arch=\$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main' | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
   && sudo apt-get update \
   && sudo apt-get install -y gh"
 
-# Install Claude Code CLI
+# Install Claude Code
 install_package "Claude Code" \
   "is_installed claude" \
   "npm install -g @anthropic-ai/claude-code"
 
-# Install uv (Python package/project manager)
+# Install uv
 install_package "uv" \
   "is_installed uv" \
   "curl -LsSf https://astral.sh/uv/install.sh | sh"
 
-# Install Android SDK (multi-step, handled inline)
+# Install Android SDK (inline)
 echo "[$(date '+%H:%M:%S')] Checking Android SDK..."
 if ! is_directory "$HOME/.android/cmdline-tools"; then
   echo "Installing Android SDK..."
@@ -164,18 +164,30 @@ install_package "Zsh" \
   "is_installed zsh" \
   "sudo apt install -y zsh"
 
-# Install Oh My Zsh (non-interactive)
-install_package "Oh My Zsh" \
-  "is_directory $ZSH_CUSTOM" \
-  "RUNZSH=no CHSH=no sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\""
+# Install Oh My Zsh (inline)
+echo "[$(date '+%H:%M:%S')] Checking Oh My Zsh..."
+if ! is_directory "$ZSH_CUSTOM"; then
+  echo "Installing Oh My Zsh..."
+  RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  echo "Oh My Zsh installed."
+else
+  echo "Oh My Zsh already installed. Skipping."
+fi
 
-# Install Spaceship theme
-install_package "Spaceship Theme" \
-  "is_directory ${ZSH_CUSTOM}/themes/spaceship-prompt" \
-  "git clone https://github.com/spaceship-prompt/spaceship-prompt.git \"${ZSH_CUSTOM}/themes/spaceship-prompt\" --depth=1 && \
-  ln -sf \"${ZSH_CUSTOM}/themes/spaceship-prompt/spaceship.zsh-theme\" \"${ZSH_CUSTOM}/themes/spaceship.zsh-theme\""
+# Install Spaceship theme (inline)
+echo "[$(date '+%H:%M:%S')] Checking Spaceship Theme..."
+if ! is_directory "$ZSH_CUSTOM/themes/spaceship-prompt"; then
+  echo "Installing Spaceship Theme..."
+  git clone https://github.com/spaceship-prompt/spaceship-prompt.git \
+    "$ZSH_CUSTOM/themes/spaceship-prompt" --depth=1
+  ln -sf "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" \
+    "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
+  echo "Spaceship Theme installed."
+else
+  echo "Spaceship Theme already installed. Skipping."
+fi
 
-# Install Zinit (inline para erros visíveis)
+# Install Zinit (inline)
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 echo "[$(date '+%H:%M:%S')] Checking Zinit..."
 if ! is_directory "$ZINIT_HOME"; then
@@ -187,12 +199,12 @@ else
   echo "Zinit already installed. Skipping."
 fi
 
-# Copy .zshrc from GitHub
+# Copia .zshrc do GitHub
 echo "Copying .zshrc from GitHub..."
 curl -fsSL https://raw.githubusercontent.com/danielorkae/setup/main/.zshrc > "$HOME/.zshrc"
 echo ".zshrc copied."
 
-# Set zsh as default shell
+# Define zsh como shell padrão
 echo "Configuring zsh as default shell..."
 sudo chsh -s "$(which zsh)" "$USER"
 echo "zsh configured as default shell."
