@@ -72,7 +72,7 @@ zinit light zsh-users/zsh-completions
 
 export NVM_DIR="$HOME/.nvm"
 
-# Carrega NVM apenas quando node/npm/nvm são chamados pela primeira vez
+# Carrega NVM apenas quando node/npm/nvm/pnpm são chamados pela primeira vez
 _load_nvm() {
   unset -f nvm node npm npx pnpm yarn
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -82,6 +82,7 @@ nvm()  { _load_nvm; nvm  "$@"; }
 node() { _load_nvm; node "$@"; }
 npm()  { _load_nvm; npm  "$@"; }
 npx()  { _load_nvm; npx  "$@"; }
+pnpm() { _load_nvm; pnpm "$@"; }
 
 # ==============================================================================
 # DEVELOPMENT ENVIRONMENT LOADERS
@@ -90,10 +91,6 @@ npx()  { _load_nvm; npx  "$@"; }
 # uv (Python package manager)
 export PATH="$HOME/.local/bin:$PATH"
 [ -s "$HOME/.local/bin/uv" ] && eval "$(uv generate-shell-completion zsh)"
-
-# pnpm
-export PNPM_HOME="$HOME/.local/share/pnpm"
-export PATH="$PNPM_HOME:$PATH"
 
 # ==============================================================================
 # LANGUAGE-SPECIFIC CONFIGURATION
