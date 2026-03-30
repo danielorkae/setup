@@ -2,25 +2,9 @@
 # OH MY ZSH CONFIGURATION
 # ==============================================================================
 
-export ZSH="/home/$USER/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME="spaceship"
-
-# ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
-
-# CASE_SENSITIVE="true"
-# HYPHEN_INSENSITIVE="true"
-# DISABLE_AUTO_UPDATE="true"
-# DISABLE_UPDATE_PROMPT="true"
-# export UPDATE_ZSH_DAYS=13
-# DISABLE_MAGIC_FUNCTIONS="true"
-# DISABLE_LS_COLORS="true"
-# DISABLE_AUTO_TITLE="true"
-# ENABLE_CORRECTION="true"
-# COMPLETION_WAITING_DOTS="true"
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-# HIST_STAMPS="mm/dd/yyyy"
-# ZSH_CUSTOM=/path/to/new-custom-folder
 
 plugins=(git)
 
@@ -38,11 +22,11 @@ if [[ -n "${VSCODE_INJECTION}" ]] || [[ $TERM_PROGRAM == "vscode" ]]; then
     printf "\033]133;D;%s\007" "$__vsc_status"
     PS1="${prompt_start}${PS1}${prompt_end}"
   }
-  
+
   __vsc_preexec() {
     printf "\033]133;C\007"
   }
-  
+
   precmd_functions+=(__vsc_precmd)
   preexec_functions=(__vsc_preexec $preexec_functions)
 fi
@@ -76,25 +60,51 @@ SPACESHIP_CHAR_SUFFIX=" "
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 source "${ZINIT_HOME}/zinit.zsh"
 
+# zsh-users/zsh-syntax-highlighting removido: conflita com fast-syntax-highlighting
 zinit load zdharma-continuum/history-search-multi-word
-zinit light zsh-users/zsh-syntax-highlighting
 zinit light zdharma-continuum/fast-syntax-highlighting
 zinit light zsh-users/zsh-autosuggestions
 zinit light zsh-users/zsh-completions
 
 # ==============================================================================
-# DEVELOPMENT ENVIRONMENT LOADERS
+# NVM - LAZY LOADING (evita ~300ms de overhead no startup)
 # ==============================================================================
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# Carrega NVM apenas quando node/npm/nvm são chamados pela primeira vez
+_load_nvm() {
+  unset -f nvm node npm npx pnpm yarn
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+}
+nvm()  { _load_nvm; nvm  "$@"; }
+node() { _load_nvm; node "$@"; }
+npm()  { _load_nvm; npm  "$@"; }
+npx()  { _load_nvm; npx  "$@"; }
+
+# ==============================================================================
+# DEVELOPMENT ENVIRONMENT LOADERS
+# ==============================================================================
+
+# uv (Python package manager)
+export PATH="$HOME/.local/bin:$PATH"
+[ -s "$HOME/.local/bin/uv" ] && eval "$(uv generate-shell-completion zsh)"
+
+# pnpm
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
 
 # ==============================================================================
 # LANGUAGE-SPECIFIC CONFIGURATION
 # ==============================================================================
 
-export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+# Java: usa o default do sistema em vez de versão hard-coded
+if [ -d /usr/lib/jvm/default-java ]; then
+  export JAVA_HOME=/usr/lib/jvm/default-java
+elif [ -d /usr/lib/jvm/java-21-openjdk-amd64 ]; then
+  export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+fi
 
 export ANDROID_HOME=$HOME/.android
 export ANDROID_SDK_ROOT=$ANDROID_HOME
@@ -103,19 +113,19 @@ export ANDROID_SDK_ROOT=$ANDROID_HOME
 # PATH CONFIGURATION
 # ==============================================================================
 
-export PATH="$(yarn global bin):$PATH"
-export PATH=$PATH:$ANDROID_HOME/cmdline-tools/tools
-export PATH=$PATH:$ANDROID_HOME/cmdline-tools/tools/bin
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest
 export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/platform-tools
-export PATH=$PATH:/opt/gradle/gradle-7.4.2/bin
 
 # ==============================================================================
 # WSL CONFIGURATION
 # ==============================================================================
 
-export WSL_HOST=$(tail -1 /etc/resolv.conf | cut -d' ' -f2)
-export ADB_SERVER_SOCKET=tcp:$WSL_HOST:5037
+if grep -qi microsoft /proc/version 2>/dev/null; then
+  export WSL_HOST=$(tail -1 /etc/resolv.conf | cut -d' ' -f2)
+  export ADB_SERVER_SOCKET=tcp:$WSL_HOST:5037
+fi
 
 # ==============================================================================
 # ENVIRONMENT VARIABLES
@@ -127,29 +137,16 @@ export PAGER=cat
 # TOKENS & CREDENTIALS
 # ==============================================================================
 
-export GITHUB_TOKEN="$(gh auth token)"
-export AUTH_TOKEN=$(gh auth token)
+# GITHUB_TOKEN: carregado sob demanda para evitar erro se gh não estiver autenticado
+github_token() {
+  if is_installed gh; then
+    gh auth token 2>/dev/null
+  fi
+}
+export GITHUB_TOKEN="$(github_token)"
 
 # ==============================================================================
 # ALIASES
 # ==============================================================================
 
 alias sail='[ -f sail ] && bash sail || bash vendor/bin/sail'
-
-# ==============================================================================
-# USER CONFIGURATION (OPTIONAL)
-# ==============================================================================
-
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-# export MANPATH="/usr/local/man:$MANPATH"
-# export LANG=en_US.UTF-8
-# export ARCHFLAGS="-arch x86_64"
-
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# alias zshconfig="mate ~/.zshrc"
-# alias ohmyzsh="mate ~/.oh-my-zsh"
