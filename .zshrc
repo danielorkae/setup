@@ -134,18 +134,6 @@ fi
 export PAGER=cat
 
 # ==============================================================================
-# TOKENS & CREDENTIALS
-# ==============================================================================
-
-# GITHUB_TOKEN: carregado sob demanda para evitar erro se gh não estiver autenticado
-github_token() {
-  if is_installed gh; then
-    gh auth token 2>/dev/null
-  fi
-}
-export GITHUB_TOKEN="$(github_token)"
-
-# ==============================================================================
 # ALIASES
 # ==============================================================================
 
