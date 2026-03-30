@@ -42,6 +42,7 @@ sudo apt-get install -y \
   apt-transport-https \
   ca-certificates \
   curl \
+  git \
   gnupg \
   lsb-release \
   python3-venv \
@@ -174,11 +175,17 @@ install_package "Spaceship Theme" \
   "git clone https://github.com/spaceship-prompt/spaceship-prompt.git \"${ZSH_CUSTOM}/themes/spaceship-prompt\" --depth=1 && \
   ln -sf \"${ZSH_CUSTOM}/themes/spaceship-prompt/spaceship.zsh-theme\" \"${ZSH_CUSTOM}/themes/spaceship.zsh-theme\""
 
-# Install Zinit via git clone (mais confiável que curl | bash)
+# Install Zinit (inline para erros visíveis)
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-install_package "Zinit" \
-  "is_directory $ZINIT_HOME" \
-  "mkdir -p \"$(dirname \"$ZINIT_HOME\")\" && git clone https://github.com/zdharma-continuum/zinit.git \"$ZINIT_HOME\""
+echo "[$(date '+%H:%M:%S')] Checking Zinit..."
+if ! is_directory "$ZINIT_HOME"; then
+  echo "Installing Zinit..."
+  mkdir -p "$(dirname "$ZINIT_HOME")"
+  git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+  echo "Zinit installed."
+else
+  echo "Zinit already installed. Skipping."
+fi
 
 # Copy .zshrc from GitHub
 echo "Copying .zshrc from GitHub..."
