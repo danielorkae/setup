@@ -128,18 +128,31 @@ install_package "uv" \
   "is_installed uv" \
   "curl -LsSf https://astral.sh/uv/install.sh | sh"
 
-# Install Android SDK
-install_package "Android SDK" \
-  "is_directory $HOME/.android/cmdline-tools" \
-  "mkdir -p \"$HOME/.android/cmdline-tools\" && \
-  curl -o /tmp/cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip && \
-  unzip -o /tmp/cmdline-tools.zip -d \"$HOME/.android/cmdline-tools\" && \
-  mv \"$HOME/.android/cmdline-tools/cmdline-tools\" \"$HOME/.android/cmdline-tools/latest\" && \
-  rm -f /tmp/cmdline-tools.zip && \
-  sudo apt install -y lib32z1 openjdk-21-jdk && \
-  export PATH=\$PATH:\"$HOME/.android/cmdline-tools/latest/bin\" && \
-  yes | sdkmanager --licenses && \
-  sdkmanager --install 'platform-tools' 'platforms;android-35' 'build-tools;35.0.0' 'cmake;3.22.1'"
+# Install Android SDK (multi-step, handled inline)
+echo "[$(date '+%H:%M:%S')] Checking Android SDK..."
+if ! is_directory "$HOME/.android/cmdline-tools"; then
+  echo "Installing Android SDK..."
+  sudo apt-get install -y lib32z1 openjdk-21-jdk >> "$LOG_FILE" 2>&1
+
+  mkdir -p "$HOME/.android/cmdline-tools"
+  curl -o /tmp/cmdline-tools.zip \
+    https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+  unzip -o /tmp/cmdline-tools.zip -d "$HOME/.android/cmdline-tools"
+  mv "$HOME/.android/cmdline-tools/cmdline-tools" "$HOME/.android/cmdline-tools/latest"
+  rm -f /tmp/cmdline-tools.zip
+
+  export PATH="$PATH:$HOME/.android/cmdline-tools/latest/bin"
+  yes 2>/dev/null | sdkmanager --licenses
+  sdkmanager --install \
+    'platform-tools' \
+    'platforms;android-35' \
+    'build-tools;35.0.0' \
+    'cmake;3.22.1'
+
+  echo "Android SDK installed."
+else
+  echo "Android SDK already installed. Skipping."
+fi
 
 echo "--> Installing and configuring zsh"
 
