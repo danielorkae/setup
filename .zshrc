@@ -67,22 +67,12 @@ zinit light zsh-users/zsh-completions
 zinit light zdharma-continuum/fast-syntax-highlighting
 
 # ==============================================================================
-# NVM - LAZY LOADING (evita ~300ms de overhead no startup)
+# NVM
 # ==============================================================================
 
 export NVM_DIR="$HOME/.nvm"
-
-# Carrega NVM apenas quando node/npm/nvm/pnpm são chamados pela primeira vez
-_load_nvm() {
-  unset -f nvm node npm npx pnpm yarn
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-}
-nvm()  { _load_nvm; nvm  "$@"; }
-node() { _load_nvm; node "$@"; }
-npm()  { _load_nvm; npm  "$@"; }
-npx()  { _load_nvm; npx  "$@"; }
-pnpm() { _load_nvm; pnpm "$@"; }
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # ==============================================================================
 # DEVELOPMENT ENVIRONMENT LOADERS
